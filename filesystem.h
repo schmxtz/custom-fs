@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 typedef struct {
-    unsigned long MAGIC;
+    long unsigned long MAGIC;
     int num_blocks;
     int num_inode_blocks;
     int num_inodes;
@@ -32,6 +32,8 @@ typedef struct {
     data_block *data;  
 } fs_ref;
 
-void load_file_system();
+fs_ref * load_file_system(const char *file_name, int partition_size);
+void dump_file_system(fs_ref *ref);
+int calc_block_count(int partition_size);
 
 #endif

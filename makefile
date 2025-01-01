@@ -1,5 +1,5 @@
 CC = gcc
-OBJ = main.o ui.o
+OBJ = main.o ui.o filesystem.o
 
 EXE = run
 all: $(EXE)
