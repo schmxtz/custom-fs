@@ -1,7 +1,8 @@
 #include <stdio.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 
 #include "ui.h"
+#include "filesystem.h"
 
 void ui_main_menu() {
     int option = -1;
@@ -9,8 +10,7 @@ void ui_main_menu() {
     scanf("%d", &option);
     switch (option) {
     case 1:
-        printf("%d", option);
-        // Handle load from file
+        load_file_system()
         break;
     case 2:
         printf("%d", option);
