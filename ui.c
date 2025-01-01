@@ -10,9 +10,9 @@ void ui_main_menu() {
     scanf("%d", &option);
     switch (option) {
     case 1:
-        char *file_name;
+        char file_name[16];
         printf("\nSpecify the partition name on disk: ");
-        scanf("%s", &file_name);
+        scanf("%s", file_name);
         ref = load_file_system(file_name, 0);
         dump_file_system(ref);
         break;
