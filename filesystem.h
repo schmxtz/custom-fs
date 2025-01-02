@@ -1,39 +1,50 @@
 #ifndef __FILESYSTEM_H__
 #define __FILESYSTEM_H__
 
-#define MAGIC_NUMBER 0x4144564350524F47 // ADVCPROG
+#define POINTER_SIZE_BYTES sizeof(void *)
+#define MAGIC_NUMBER "ADV C-PROG 2024"
 #define BLOCK_SIZE 1024
 #define MAX_MEMORY 16000000 // max 16MB
+#define NAME_MAX_LEN 15
 
-#include <stdio.h>
-#include <stdlib.h>
+enum file_type {
+    FREE_INODE,
+    FILE_INODE,
+    DIRECTORY_INODE
+};
 
 typedef struct {
-    long unsigned long MAGIC;
+    char MAGIC[16];
+    int partitition_size;
     int num_blocks;
-    int num_inode_blocks;
     int num_inodes;
-} super_block;
+    int num_inode_blocks;
+    struct inode *inodes;
+    struct data_block *blocks;
+} superblock;
 
 typedef struct {
-    unsigned char data[BLOCK_SIZE];
-} data_block;
-
-typedef struct { // 64 byte
-    char name[43];
-    char type;
-    int size;
-    data_block *direct; // pointer to data_block if size <= BLOCK_SIZE
-    data_block *indirect; // pointer to indirect data_block
+    char name[NAME_MAX_LEN]; // 15 chars for alignment (14 chars + null terminate)
+    enum file_type type;
+    int file_size;
+    int direct_index; // will be the parent index for directories
+    int indirect_indices; // will be the children indices inside directories
 } inode;
 
 typedef struct {
-    super_block *super;
-    data_block *data;  
-} fs_ref;
+    char data[BLOCK_SIZE];
+} data_block;
 
-fs_ref * load_file_system(const char *file_name, int partition_size);
-void dump_file_system(fs_ref *ref);
-int calc_block_count(int partition_size);
+typedef struct {
+    int block_indices[BLOCK_SIZE / sizeof(int)];
+} indirect_data_block;
+
+typedef struct {
+    struct superblock *super;
+    int *free_block_bitmap;
+} filesystem;
+
+filesystem *load_filesystem(const char *file_name, int partition_size);
+void dump_filesystem(filesystem *fs);
 
 #endif
