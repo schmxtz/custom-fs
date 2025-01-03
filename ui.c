@@ -4,7 +4,7 @@
 #include "ui.h"
 
 void ui_main_menu() {
-    filesystem * fs;
+    filesystem *fs;
     int option;
 
     printf("Options:\n  1. Load partition from file\n  2. Create new partition in memory\n  Choose option?: ");
@@ -21,6 +21,7 @@ void ui_main_menu() {
         printf("\nSpecify the partition size: ");
         scanf("%d", &partition_size);
         fs = load_filesystem(NULL, partition_size);
+        dump_filesystem(fs);
         break;
     default:
         printf("Invalid choice!\n");

@@ -14,22 +14,16 @@ enum file_type {
 };
 
 typedef struct {
-    char MAGIC[16];
-    int partitition_size;
-    int num_blocks;
-    int num_inodes;
-    int num_inode_blocks;
-    struct inode *inodes;
-    struct data_block *blocks;
-} superblock;
-
-typedef struct {
     char name[NAME_MAX_LEN]; // 15 chars for alignment (14 chars + null terminate)
     enum file_type type;
     int file_size;
     int direct_index; // will be the parent index for directories
     int indirect_indices; // will be the children indices inside directories
 } inode;
+
+typedef struct {
+    inode inodes[BLOCK_SIZE/sizeof(inode)];
+} inode_block;
 
 typedef struct {
     char data[BLOCK_SIZE];
@@ -40,7 +34,20 @@ typedef struct {
 } indirect_data_block;
 
 typedef struct {
-    struct superblock *super;
+    char MAGIC[16];
+    data_block *data_blocks;
+    inode_block *inode_blocks;
+    int partitition_size;
+    int total_inodes;
+    int used_inodes;
+    int total_inodes_blocks;
+    int total_data_blocks;
+    int total_blocks;
+    int used_blocks;
+} superblock;
+
+typedef struct {
+    superblock *super;
     int *free_block_bitmap;
 } filesystem;
 
